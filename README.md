@@ -15,7 +15,7 @@ are added.
 
 ### Registering and accepting Let's Encrypt's terms
 
-In order to issue certificates with Let's Encrypt, you must registerr and agree to the
+In order to issue certificates with Let's Encrypt, you must register and agree to the
 Let's Encrypt terms of service. You can do this by running the command
 `/dehydrated --register --accept-terms` from within the container. I suggest you use
 docker-compose, which means you can just do the following:
@@ -90,6 +90,7 @@ echo "example.com *.example.com" > /tmp/letsencrypt/domains.txt
 docker run -d --restart=always \
   -e "EMAIL=admin@domain.com" \
   -e "STAGING=true" \
+  -e "ACCEPT_CA_TERMS=true" \
   -e "PROVIDER=cloudflare" \
   -e "LEXICON_CLOUDFLARE_USERNAME=email@address.com" \
   -e "LEXICON_CLOUDFLARE_TOKEN=api-key-here" \
@@ -99,17 +100,22 @@ docker run -d --restart=always \
 
 An example docker-compose.yml:
 
-```letsencrypt:
-  image: fhriley/letsencrypt-wildcard:latest
-  container_name: letsencrypt
-  hostname: letsencrypt
-  restart: always
-  volumes:
-    - /tmp/letsencrypt:/letsencrypt
-  environment:
-    - EMAIL=email@domain.com
-    - STAGING=true
-    - ACCEPT_CA_TERMS=true
-    - PROVIDER=cloudflare
-    - LEXICON_CLOUDFLARE_USERNAME=email@domain.com
-    - LEXICON_CLOUDFLARE_TOKEN=api-key-here```
+```
+version: "2"
+services:
+
+  letsencrypt:
+    image: fhriley/letsencrypt-wildcard:latest
+    container_name: letsencrypt
+    hostname: letsencrypt
+    restart: always
+    volumes:
+      - /tmp/letsencrypt:/letsencrypt
+    environment:
+      - EMAIL=admin@domain.com
+      - STAGING=true
+      - ACCEPT_CA_TERMS=true
+      - PROVIDER=cloudflare
+      - LEXICON_CLOUDFLARE_USERNAME=email@address.com
+      - LEXICON_CLOUDFLARE_TOKEN=api-key-here
+```
